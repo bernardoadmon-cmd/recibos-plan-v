@@ -489,9 +489,9 @@
                 <i class="fa-solid fa-money-bill-wave text-brand-pink"></i> Primer Anticipo (Opcional)
               </h3>
 
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label class="block text-xs font-bold text-brand-muted uppercase tracking-wider mb-1">Monto del Primer Anticipo</label>
+                  <label class="block text-xs font-bold text-brand-muted uppercase tracking-wider mb-1">Monto</label>
                   <input type="number" step="0.01" id="nuevoPrimerAnticipo" placeholder="0.00" class="w-full p-3 border rounded-xl text-sm border-brand-purple/30 focus:ring-2 focus:ring-brand-pink outline-none font-bold text-emerald-600 bg-white">
                 </div>
 
@@ -503,6 +503,11 @@
                     <option value="Tarjeta de Crédito / Débito">Tarjeta de Crédito / Débito</option>
                     <option value="Depósito en Ventanilla">Depósito en Ventanilla</option>
                   </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-brand-muted uppercase tracking-wider mb-1">Fecha de Pago</label>
+                  <input type="date" id="nuevoPrimerAnticipoFecha" class="w-full p-3 border rounded-xl text-sm border-brand-purple/30 focus:ring-2 focus:ring-brand-pink outline-none bg-white font-medium text-brand-dark">
                 </div>
               </div>
             </div>
@@ -562,14 +567,20 @@
               <input type="number" step="0.01" id="modalTCAbono" value="18.50" class="w-full p-2.5 border rounded-xl text-sm border-amber-300 focus:ring-2 focus:ring-amber-500 outline-none bg-amber-50 font-bold text-amber-900">
             </div>
 
-            <div>
-              <label class="block text-xs font-bold text-brand-dark uppercase mb-1">Método de Pago *</label>
-              <select id="modalMetodoAbono" class="w-full p-3 border rounded-xl text-sm border-brand-purple/30 focus:ring-2 focus:ring-brand-pink outline-none bg-white font-medium text-brand-dark">
-                <option value="Transferencia Bancaria">Transferencia Bancaria</option>
-                <option value="Efectivo">Efectivo</option>
-                <option value="Tarjeta de Crédito / Débito">Tarjeta de Crédito / Débito</option>
-                <option value="Depósito en Ventanilla">Depósito en Ventanilla</option>
-              </select>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-brand-dark uppercase mb-1">Método de Pago *</label>
+                <select id="modalMetodoAbono" class="w-full p-3 border rounded-xl text-sm border-brand-purple/30 focus:ring-2 focus:ring-brand-pink outline-none bg-white font-medium text-brand-dark">
+                  <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                  <option value="Efectivo">Efectivo</option>
+                  <option value="Tarjeta de Crédito / Débito">Tarjeta de Crédito / Débito</option>
+                  <option value="Depósito en Ventanilla">Depósito en Ventanilla</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-brand-dark uppercase mb-1">Fecha de Pago</label>
+                <input type="date" id="modalAbonoFecha" required class="w-full p-3 border rounded-xl text-sm border-brand-purple/30 focus:ring-2 focus:ring-brand-pink outline-none bg-white font-medium text-brand-dark">
+              </div>
             </div>
 
             <div>
@@ -587,6 +598,77 @@
             </div>
           </form>
 
+        </div>
+      </div>
+
+      <!-- MODAL EDITAR CLIENTE -->
+      <div id="modalEditarCliente" class="fixed inset-0 bg-brand-dark/75 backdrop-blur-sm z-40 hidden overflow-y-auto p-4 sm:p-6 flex justify-center">
+        <div class="relative bg-white rounded-3xl w-full max-w-4xl shadow-brand-xl my-auto">
+          <div class="p-6 border-b border-brand-purple/20 flex justify-between items-center bg-brand-soft rounded-t-3xl">
+            <div>
+              <h3 class="text-xl font-black text-brand-dark"><i class="fa-solid fa-pen-to-square text-brand-pink mr-2"></i>Editar Cliente</h3>
+              <p class="text-xs text-brand-purple mt-1" id="lblEditarClienteID"></p>
+            </div>
+            <button type="button" onclick="cerrarModalEditar()" class="text-brand-purple hover:text-brand-dark text-2xl transition"><i class="fa-solid fa-times"></i></button>
+          </div>
+          <form id="formEditarCliente" onsubmit="guardarEdicionCliente(event)" class="p-6 space-y-4">
+            <input type="hidden" id="editarClienteId">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-brand-dark uppercase tracking-wider mb-1.5">Nombre del Cliente *</label>
+                <input type="text" id="editarClienteNombre" required class="w-full p-3 border rounded-xl text-sm border-brand-purple/30 bg-white focus:ring-2 focus:ring-brand-pink outline-none transition">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-brand-dark uppercase tracking-wider mb-1.5">Pasajeros Acompañantes</label>
+                <textarea id="editarPasajeros" rows="2" class="w-full p-3 border rounded-xl text-sm border-brand-purple/30 bg-white focus:ring-2 focus:ring-brand-pink outline-none transition"></textarea>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold text-brand-dark uppercase tracking-wider mb-1.5">Servicio o Trámite *</label>
+                <input type="text" id="editarServicio" required class="w-full p-3 border rounded-xl text-sm border-brand-purple/30 bg-white focus:ring-2 focus:ring-brand-pink outline-none transition">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-brand-dark uppercase tracking-wider mb-1.5">Código de Servicio *</label>
+                <input type="text" id="editarCodigoServicio" required class="w-full p-3 border rounded-xl text-sm border-brand-purple/40 bg-brand-soft/50 focus:ring-2 focus:ring-brand-pink outline-none font-extrabold text-brand-pink uppercase tracking-wider transition">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-brand-dark uppercase tracking-wider mb-1.5">Itinerario / Detalles del Servicio</label>
+              <textarea id="editarItinerario" rows="2" class="w-full p-3 border rounded-xl text-sm border-brand-purple/30 bg-white focus:ring-2 focus:ring-brand-pink outline-none transition"></textarea>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-brand-dark uppercase tracking-wider mb-1.5">Agente de Viajes *</label>
+                <input type="text" id="editarAgenteViajes" required class="w-full p-3 border rounded-xl text-sm border-brand-purple/30 bg-white focus:ring-2 focus:ring-brand-pink outline-none transition">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-brand-dark uppercase tracking-wider mb-1.5">Teléfono / Contacto del Agente</label>
+                <input type="tel" id="editarContactoAgente" class="w-full p-3 border rounded-xl text-sm border-brand-purple/30 bg-white focus:ring-2 focus:ring-brand-pink outline-none transition">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-brand-soft/60 p-4 rounded-2xl border border-brand-purple/30">
+              <div>
+                <label class="block text-xs font-bold text-brand-dark uppercase mb-1">Moneda del Servicio *</label>
+                <select id="editarMoneda" onchange="toggleTCEditarField()" class="w-full p-2.5 border rounded-xl text-sm border-brand-purple/30 focus:ring-2 focus:ring-brand-pink outline-none bg-white font-bold text-brand-dark">
+                  <option value="MXN">MXN (Pesos Mexicanos)</option>
+                  <option value="USD">USD (Dólares US)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-brand-dark uppercase mb-1">Total Paquete *</label>
+                <input type="number" step="0.01" id="editarTotalPaquete" required class="w-full p-2.5 border rounded-xl text-sm border-brand-purple/30 focus:ring-2 focus:ring-brand-pink outline-none font-black text-brand-dark bg-white">
+              </div>
+              <div id="boxTCEditar" class="hidden">
+                <label class="block text-xs font-bold text-amber-800 uppercase mb-1">Tipo Cambio USD/MXN</label>
+                <input type="number" step="0.01" id="editarTC" class="w-full p-2.5 border rounded-xl text-sm border-amber-300 focus:ring-2 focus:ring-amber-500 outline-none bg-amber-50 font-bold text-amber-900">
+              </div>
+            </div>
+            <div class="pt-4 flex justify-end gap-3">
+              <button type="button" onclick="cerrarModalEditar()" class="px-6 py-3 rounded-xl font-bold text-sm bg-brand-soft text-brand-dark border border-brand-purple/20 hover:bg-brand-purple/20 transition">Cancelar</button>
+              <button type="submit" class="px-6 py-3 rounded-xl font-black text-sm bg-brand-pink hover:bg-rose-600 text-white shadow-brand-pink transition"><i class="fa-solid fa-save mr-1"></i> Guardar Cambios</button>
+            </div>
+          </form>
         </div>
       </div>
 
@@ -789,6 +871,13 @@
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       const activeSection = document.getElementById(`sec-${tabId}`);
       if (activeSection) activeSection.classList.remove('hidden');
+
+      if (tabId === 'nuevoCliente') {
+        const fechaNuevo = document.getElementById('nuevoPrimerAnticipoFecha');
+        if (fechaNuevo && !fechaNuevo.value) {
+          fechaNuevo.value = new Date().toISOString().split('T')[0];
+        }
+      }
 
       document.querySelectorAll('.nav-tab').forEach(btn => {
         btn.classList.remove('bg-brand-pink', 'text-white', 'shadow-brand-pink');
@@ -1119,12 +1208,18 @@
                     ${formatConMoneda(saldoOriginal)}
                   </span>
                 </div>
-                <div class="flex gap-2">
+                <div class="flex gap-2 flex-wrap justify-end">
+                  <button onclick="abrirModalEditar('${c.id}')" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shadow" title="Editar Cliente">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                  <button onclick="eliminarCliente('${c.id}')" class="bg-red-600 hover:bg-red-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shadow" title="Eliminar Cliente">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
                   <button onclick="abrirModalAbono('${c.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shadow">
                     <i class="fa-solid fa-plus"></i> Abono
                   </button>
                   <button onclick="verUltimoReciboCliente('${c.id}')" class="bg-brand-dark hover:bg-slate-800 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shadow">
-                    <i class="fa-solid fa-receipt"></i> Recibo PDF
+                    <i class="fa-solid fa-receipt"></i> Recibo
                   </button>
                 </div>
               </div>
@@ -1155,7 +1250,13 @@
                   ${porcentaje}%
                 </span>
               </td>
-              <td class="p-3 pr-5 text-right space-x-1">
+              <td class="p-3 pr-5 text-right space-x-1 whitespace-nowrap">
+                <button onclick="abrirModalEditar('${c.id}')" class="bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition" title="Editar">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button onclick="eliminarCliente('${c.id}')" class="bg-red-600 hover:bg-red-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition" title="Eliminar">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
                 <button onclick="abrirModalAbono('${c.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition">
                   + Abono
                 </button>
@@ -1190,7 +1291,7 @@
     }
 
     /* GUARDAR NUEVO CLIENTE Y SERVICIO */
-    function guardarNuevoCliente(e) {
+    async function guardarNuevoCliente(e) {
       e.preventDefault();
       
       const nombre = document.getElementById('nuevoClienteNombre').value.trim();
@@ -1209,6 +1310,8 @@
 
       const primerAnticipoVal = parseFloat(document.getElementById('nuevoPrimerAnticipo').value) || 0;
       const metodoPago = document.getElementById('nuevoMetodoPago').value;
+      const fechaPagoInput = document.getElementById('nuevoPrimerAnticipoFecha').value;
+      const fechaPago = fechaPagoInput || new Date().toISOString().split('T')[0];
 
       const newId = `CLI-${Date.now().toString().slice(-4)}`;
       let initialAbonos = [];
@@ -1217,7 +1320,7 @@
         const folioAbono = `REC-${folioCounter++}`;
         initialAbonos.push({
           id: folioAbono,
-          fecha: new Date().toISOString().split('T')[0],
+          fecha: fechaPago,
           monto: primerAnticipoVal,
           montoPesos: primerAnticipoVal * tc,
           tc: tc,
@@ -1242,7 +1345,7 @@
       };
 
       if(window.setDoc && window.doc && window.firebaseDb) {
-        window.setDoc(window.doc(window.firebaseDb, "clientes", clienteObj.id), clienteObj);
+        await window.setDoc(window.doc(window.firebaseDb, "clientes", clienteObj.id), clienteObj);
       }
       document.getElementById('formNuevoCliente').reset();
       
@@ -1262,7 +1365,8 @@
           itinerario: clienteObj.itinerario,
           agenteViajes: clienteObj.agenteViajes,
           contactoAgente: clienteObj.contactoAgente,
-          codigoServicio: clienteObj.codigoServicio
+          codigoServicio: clienteObj.codigoServicio,
+          clienteCompleto: clienteObj
         });
       } else {
         switchTab('clientes');
@@ -1300,11 +1404,94 @@
 
       document.getElementById('modalMontoAbono').value = '';
       document.getElementById('modalNotasAbono').value = '';
+      document.getElementById('modalAbonoFecha').value = new Date().toISOString().split('T')[0];
       document.getElementById('modalAbono').classList.remove('hidden');
     }
 
     function cerrarModalAbono() {
       document.getElementById('modalAbono').classList.add('hidden');
+    }
+
+    /* FUNCIONES DE EDICIÓN Y ELIMINACIÓN */
+    function abrirModalEditar(clienteId) {
+      const cli = appData.clientes.find(c => c.id === clienteId);
+      if (!cli) return;
+
+      document.getElementById('editarClienteId').value = cli.id;
+      document.getElementById('lblEditarClienteID').innerText = `ID: ${cli.id}`;
+      document.getElementById('editarClienteNombre').value = cli.nombre;
+      document.getElementById('editarPasajeros').value = cli.pasajeros || '';
+      document.getElementById('editarServicio').value = cli.servicio;
+      document.getElementById('editarCodigoServicio').value = cli.codigoServicio || '';
+      document.getElementById('editarItinerario').value = cli.itinerario === 'N/A' ? '' : cli.itinerario;
+      document.getElementById('editarAgenteViajes').value = cli.agenteViajes;
+      document.getElementById('editarContactoAgente').value = cli.contactoAgente || '';
+      document.getElementById('editarMoneda').value = cli.moneda;
+      document.getElementById('editarTotalPaquete').value = cli.totalPaquete;
+      
+      toggleTCEditarField();
+      if (cli.moneda === 'USD') {
+        document.getElementById('editarTC').value = cli.tc || 18.50;
+      }
+
+      document.getElementById('modalEditarCliente').classList.remove('hidden');
+    }
+
+    function cerrarModalEditar() {
+      document.getElementById('modalEditarCliente').classList.add('hidden');
+    }
+
+    function toggleTCEditarField() {
+      const mon = document.getElementById('editarMoneda').value;
+      const box = document.getElementById('boxTCEditar');
+      if (mon === 'USD') box.classList.remove('hidden');
+      else box.classList.add('hidden');
+    }
+
+    async function guardarEdicionCliente(e) {
+      e.preventDefault();
+      const id = document.getElementById('editarClienteId').value;
+      const cli = appData.clientes.find(c => c.id === id);
+      if (!cli) return;
+
+      const nombre = document.getElementById('editarClienteNombre').value.trim();
+      const pasajeros = document.getElementById('editarPasajeros').value.trim();
+      const servicio = document.getElementById('editarServicio').value.trim();
+      const codigoServicio = document.getElementById('editarCodigoServicio').value.trim().toUpperCase();
+      const itinerarioInput = document.getElementById('editarItinerario').value.trim();
+      const itinerario = itinerarioInput === '' ? 'N/A' : itinerarioInput;
+      const agenteViajesInput = document.getElementById('editarAgenteViajes').value.trim();
+      const agenteViajes = agenteViajesInput === '' ? 'Miguel Orozco Camacho' : agenteViajesInput;
+      const contactoAgente = document.getElementById('editarContactoAgente').value.trim();
+      const moneda = document.getElementById('editarMoneda').value;
+      const totalPaquete = parseFloat(document.getElementById('editarTotalPaquete').value) || 0;
+      const tc = moneda === 'USD' ? (parseFloat(document.getElementById('editarTC').value) || 18.50) : 1;
+
+      const updatedObj = {
+        nombre,
+        pasajeros,
+        servicio,
+        codigoServicio,
+        itinerario,
+        agenteViajes,
+        contactoAgente,
+        moneda,
+        tc,
+        totalPaquete
+      };
+
+      if(window.setDoc && window.doc && window.firebaseDb) {
+        await window.setDoc(window.doc(window.firebaseDb, "clientes", id), updatedObj, { merge: true });
+      }
+      cerrarModalEditar();
+    }
+
+    async function eliminarCliente(id) {
+      if (confirm('¿Estás seguro de que deseas eliminar a este cliente y todos sus recibos asociados? Esta acción no se puede deshacer.')) {
+        if(window.deleteDoc && window.doc && window.firebaseDb) {
+          await window.deleteDoc(window.doc(window.firebaseDb, "clientes", id));
+        }
+      }
     }
 
     function guardarAbonoCliente(e) {
@@ -1321,7 +1508,8 @@
       if (monto <= 0) return;
 
       const nuevoFolio = `REC-${folioCounter++}`;
-      const fecha = new Date().toISOString().split('T')[0];
+      const fechaInput = document.getElementById('modalAbonoFecha').value;
+      const fecha = fechaInput || new Date().toISOString().split('T')[0];
       const montoPesos = monto * tc;
 
       const nuevoAbono = {
@@ -1390,7 +1578,7 @@
 
     function verReciboDirecto(data) {
       currentReceiptData = data;
-      const cli = appData.clientes.find(c => c.id === data.clienteId);
+      const cli = data.clienteCompleto || appData.clientes.find(c => c.id === data.clienteId);
       
       document.getElementById('pdfCodigoServicio').innerText = data.codigoServicio || 'N/A';
       document.getElementById('pdfCliente').innerText = data.cliente;
@@ -1810,7 +1998,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getFirestore, collection, doc, setDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { getFirestore, collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAO680PcbpQXx1oDHhm1x-JmEGkmSXrhmM",
@@ -1836,6 +2024,7 @@
     window.doc = doc;
     window.setDoc = setDoc;
     window.updateDoc = updateDoc;
+    window.deleteDoc = deleteDoc;
     window.collection = collection;
 
     // Control de sesión y acceso
