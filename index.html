@@ -583,10 +583,7 @@
               </div>
             </div>
 
-            <div>
-              <label class="block text-xs font-bold text-brand-dark uppercase mb-1">Observaciones / Folio Bancario</label>
-              <input type="text" id="modalNotasAbono" placeholder="Ej. SPEI Bancomer Ref #928371" class="w-full p-3 border rounded-xl text-sm border-brand-purple/30 focus:ring-2 focus:ring-brand-pink outline-none">
-            </div>
+
 
             <div class="pt-3 flex gap-3">
               <button type="button" onclick="cerrarModalAbono()" class="w-1/3 bg-brand-soft text-brand-dark font-bold py-3 rounded-xl text-sm border border-brand-purple/20 hover:bg-brand-purple/20 transition">
@@ -1480,6 +1477,25 @@
         totalPaquete
       };
 
+      // Si cambió la moneda o el tipo de cambio, actualizamos los abonos afectados
+      let abonosModificados = false;
+      if (cli.abonos && cli.abonos.length > 0) {
+        if (moneda !== cli.moneda || tc !== cli.tc) {
+          cli.abonos.forEach((abono, index) => {
+            // Actualizar si es el primer abono o si no tenía un tc personalizado
+            if (index === 0 || !abono.tc || abono.tc === 1 || abono.tc === cli.tc) {
+              abono.tc = tc;
+              abono.montoPesos = abono.monto * tc;
+              abonosModificados = true;
+            }
+          });
+        }
+      }
+      
+      if (abonosModificados) {
+        updatedObj.abonos = cli.abonos;
+      }
+
       if(window.setDoc && window.doc && window.firebaseDb) {
         await window.setDoc(window.doc(window.firebaseDb, "clientes", id), updatedObj, { merge: true });
       }
@@ -1502,7 +1518,6 @@
 
       const monto = parseFloat(document.getElementById('modalMontoAbono').value) || 0;
       const metodo = document.getElementById('modalMetodoAbono').value;
-      const notas = document.getElementById('modalNotasAbono').value.trim();
       const tc = cli.moneda === 'USD' ? (parseFloat(document.getElementById('modalTCAbono').value) || 18.50) : 1;
 
       if (monto <= 0) return;
@@ -1518,8 +1533,7 @@
         monto,
         montoPesos,
         tc,
-        metodo,
-        notas
+        metodo
       };
 
       cli.abonos.push(nuevoAbono);
