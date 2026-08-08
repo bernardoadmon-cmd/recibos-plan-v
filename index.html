@@ -1400,7 +1400,6 @@
       }
 
       document.getElementById('modalMontoAbono').value = '';
-      document.getElementById('modalNotasAbono').value = '';
       document.getElementById('modalAbonoFecha').value = new Date().toISOString().split('T')[0];
       document.getElementById('modalAbono').classList.remove('hidden');
     }
@@ -1477,19 +1476,19 @@
         totalPaquete
       };
 
-      // Si cambió la moneda o el tipo de cambio, actualizamos los abonos afectados
+      // Sincronizar el tipo de cambio de los abonos aplicables (útil por si alguno quedó con tc=1)
       let abonosModificados = false;
       if (cli.abonos && cli.abonos.length > 0) {
-        if (moneda !== cli.moneda || tc !== cli.tc) {
-          cli.abonos.forEach((abono, index) => {
-            // Actualizar si es el primer abono o si no tenía un tc personalizado
-            if (index === 0 || !abono.tc || abono.tc === 1 || abono.tc === cli.tc) {
+        cli.abonos.forEach((abono, index) => {
+          // Actualizar si es el primer abono o si no tenía un tc personalizado
+          if (index === 0 || !abono.tc || abono.tc === 1 || abono.tc === cli.tc) {
+            if (abono.tc !== tc) {
               abono.tc = tc;
               abono.montoPesos = abono.monto * tc;
               abonosModificados = true;
             }
-          });
-        }
+          }
+        });
       }
       
       if (abonosModificados) {
