@@ -183,13 +183,13 @@
     <div class="sidebar-text hidden md:block pt-5 border-t border-white/10 space-y-3">
       <div class="flex items-center gap-3 bg-white/5 p-3 rounded-2xl border border-white/10 backdrop-blur-sm">
         <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-pink to-brand-cyan p-0.5 shrink-0 shadow-md">
-          <div class="w-full h-full bg-brand-dark rounded-[10px] flex items-center justify-center text-xs font-black text-white">
-            MO
+          <div id="sidebar-user-initials" class="w-full h-full bg-brand-dark rounded-[10px] flex items-center justify-center text-xs font-black text-white">
+            --
           </div>
         </div>
         <div class="text-xs truncate">
-          <p class="font-bold text-white truncate">Miguel Orozco C.</p>
-          <p class="text-[#6ec7d7] text-[10px] font-semibold">Agente Principal</p>
+          <p id="sidebar-user-name" class="font-bold text-white truncate">Cargando...</p>
+          <p id="sidebar-user-email" class="text-[#6ec7d7] text-[10px] font-semibold truncate">Cargando...</p>
         </div>
       </div>
       <div class="flex items-center justify-between text-[10px] text-brand-purple px-1">
@@ -453,7 +453,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs font-bold text-brand-dark uppercase tracking-wider mb-1.5">Agente de Viajes *</label>
-                <input type="text" id="nuevoAgenteViajes" required value="Miguel Orozco Camacho" class="w-full p-3 border rounded-xl text-sm border-brand-purple/30 bg-brand-soft/30 focus:ring-2 focus:ring-brand-pink focus:border-brand-pink outline-none transition">
+                <input type="text" id="nuevoAgenteViajes" required placeholder="Nombre del asesor" class="w-full p-3 border rounded-xl text-sm border-brand-purple/30 bg-brand-soft/30 focus:ring-2 focus:ring-brand-pink focus:border-brand-pink outline-none transition">
               </div>
               <div>
                 <label class="block text-xs font-bold text-brand-dark uppercase tracking-wider mb-1.5">Teléfono / Contacto del Agente *</label>
@@ -724,7 +724,7 @@
                   </div>
                   <p class="font-extrabold text-brand-dark text-sm">DATOS DE LA AGENCIA</p>
                   <p class="font-black text-brand-pink">PLAN V by FraVEO</p>
-                  <p class="font-semibold text-slate-800" id="pdfAgenteViajes">Miguel Orozco Camacho</p>
+                  <p class="font-semibold text-slate-800" id="pdfAgenteViajes"></p>
                   <p>Domicilio: 4313, Col. Lázaro Cárdenas Sur</p>
                   <p>C.P. 44980</p>
                   <p class="font-bold text-slate-700">Guadalajara, Jalisco</p>
@@ -1298,7 +1298,7 @@
       const itinerarioInput = document.getElementById('nuevoItinerario').value.trim();
       const itinerario = itinerarioInput === '' ? 'N/A' : itinerarioInput;
       const agenteViajesInput = document.getElementById('nuevoAgenteViajes').value.trim();
-      const agenteViajes = agenteViajesInput === '' ? 'Miguel Orozco Camacho' : agenteViajesInput;
+      const agenteViajes = agenteViajesInput;
       const contactoAgenteInput = document.getElementById('nuevoContactoAgente').value.trim();
       const contactoAgente = contactoAgenteInput === '' ? '' : contactoAgenteInput;
       const moneda = document.getElementById('nuevoMoneda').value;
@@ -1457,7 +1457,7 @@
       const itinerarioInput = document.getElementById('editarItinerario').value.trim();
       const itinerario = itinerarioInput === '' ? 'N/A' : itinerarioInput;
       const agenteViajesInput = document.getElementById('editarAgenteViajes').value.trim();
-      const agenteViajes = agenteViajesInput === '' ? 'Miguel Orozco Camacho' : agenteViajesInput;
+      const agenteViajes = agenteViajesInput;
       const contactoAgente = document.getElementById('editarContactoAgente').value.trim();
       const moneda = document.getElementById('editarMoneda').value;
       const totalPaquete = parseFloat(document.getElementById('editarTotalPaquete').value) || 0;
@@ -1597,7 +1597,7 @@
       document.getElementById('pdfCliente').innerText = data.cliente;
       document.getElementById('pdfPasajeros').innerText = data.pasajeros ? data.pasajeros : 'N/A';
       document.getElementById('pdfItinerario').innerText = (data.itinerario && data.itinerario.trim() !== '') ? data.itinerario : 'N/A';
-      document.getElementById('pdfAgenteViajes').innerText = data.agenteViajes || 'Miguel Orozco Camacho';
+      document.getElementById('pdfAgenteViajes').innerText = data.agenteViajes || '';
       const contactoEl = document.getElementById('pdfContactoAgente');
       if (data.contactoAgente) {
         contactoEl.innerText = `Tel / WhatsApp: ${data.contactoAgente}`;
@@ -2027,7 +2027,7 @@
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
 
-    const CORREO_AUTORIZADO = "bernardo.admon@gmail.com";
+    const CORREOS_AUTORIZADOS = ["bernardo.admon@gmail.com", "correo2@gmail.com"];
 
     window.firebaseAuth = auth;
     window.firebaseDb = db;
@@ -2046,7 +2046,21 @@
       const appContainer = document.getElementById('appContainer');
       
       if (user) {
-        if (user.email === CORREO_AUTORIZADO) {
+        if (CORREOS_AUTORIZADOS.length === 0 || CORREOS_AUTORIZADOS.includes(user.email)) {
+          // Extraer nombre de usuario e iniciales
+          const userName = user.displayName || user.email.split('@')[0];
+          const userEmail = user.email;
+          const initials = userName.substring(0, 2).toUpperCase();
+          
+          // Actualizar la UI del sidebar
+          const sidebarNameEl = document.getElementById('sidebar-user-name');
+          const sidebarEmailEl = document.getElementById('sidebar-user-email');
+          const sidebarInitialsEl = document.getElementById('sidebar-user-initials');
+          
+          if (sidebarNameEl) sidebarNameEl.innerText = userName;
+          if (sidebarEmailEl) sidebarEmailEl.innerText = userEmail;
+          if (sidebarInitialsEl) sidebarInitialsEl.innerText = initials;
+
           loginScreen.classList.add('hidden');
           appContainer.classList.remove('hidden');
           
