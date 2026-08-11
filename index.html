@@ -1322,7 +1322,8 @@
           montoPesos: primerAnticipoVal * tc,
           tc: tc,
           metodo: metodoPago,
-          notas: 'Primer anticipo al aperturar servicio'
+          notas: 'Primer anticipo al aperturar servicio',
+          creadoPor: window.firebaseAuth && window.firebaseAuth.currentUser ? window.firebaseAuth.currentUser.email : ''
         });
       }
 
@@ -1338,7 +1339,8 @@
         moneda,
         tc,
         totalPaquete,
-        abonos: initialAbonos
+        abonos: initialAbonos,
+        creadoPor: window.firebaseAuth && window.firebaseAuth.currentUser ? window.firebaseAuth.currentUser.email : ''
       };
 
       if(window.setDoc && window.doc && window.firebaseDb) {
@@ -1532,7 +1534,8 @@
         monto,
         montoPesos,
         tc,
-        metodo
+        metodo,
+        creadoPor: window.firebaseAuth && window.firebaseAuth.currentUser ? window.firebaseAuth.currentUser.email : ''
       };
 
       cli.abonos.push(nuevoAbono);
@@ -2029,8 +2032,7 @@
 
     const CORREOS_AUTORIZADOS = [
       "bernardo.admon@gmail.com",
-      "claudiag.alvarezz@gmail.com",
-      "claudiagalvarezz@gmail.com"
+      "claudiag.alvarezz@gmail.com"
     ];
 
     window.firebaseAuth = auth;
