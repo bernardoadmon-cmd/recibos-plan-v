@@ -856,7 +856,6 @@
       clientes: []
     };
 
-    let folioCounter = 1005;
     let viewMode = 'grid'; // 'grid' o 'list'
     let isSidebarCollapsed = false;
     let currentReceiptData = null;
@@ -1314,7 +1313,7 @@
       let initialAbonos = [];
 
       if (primerAnticipoVal > 0) {
-        const folioAbono = `REC-${folioCounter++}`;
+        const folioAbono = newId.replace('CLI', 'REC');
         initialAbonos.push({
           id: folioAbono,
           fecha: fechaPago,
@@ -1523,7 +1522,7 @@
 
       if (monto <= 0) return;
 
-      const nuevoFolio = `REC-${folioCounter++}`;
+      const nuevoFolio = clienteId.replace('CLI', 'REC');
       const fechaInput = document.getElementById('modalAbonoFecha').value;
       const fecha = fechaInput || new Date().toISOString().split('T')[0];
       const montoPesos = monto * tc;
@@ -2080,19 +2079,7 @@
             // Reemplazar appData.clientes
             appData.clientes = tempClientes;
             
-            // Actualizar Folio Counter según registros
-            if (tempClientes.length > 0) {
-              // Buscar el folio mayor
-              let maxFolio = 1000;
-              tempClientes.forEach(cli => {
-                 let num = parseInt(cli.id.split('-')[1]);
-                 if(num > maxFolio) maxFolio = num;
-              });
-              folioCounter = maxFolio + 1;
-            } else {
-              folioCounter = 1001;
-            }
-
+            // El folio ahora se deriva del ID del cliente, no se necesita contador
             renderDashboard();
             renderClientesTable();
           });
