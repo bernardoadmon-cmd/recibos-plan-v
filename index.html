@@ -1688,25 +1688,25 @@
       contenedorTemporal.style.position = 'absolute';
       contenedorTemporal.style.left = '-9999px';
       contenedorTemporal.style.top = '-9999px';
-      contenedorTemporal.style.width = '800px';
+      contenedorTemporal.style.width = '794px';
+      contenedorTemporal.style.opacity = '0';
       contenedorTemporal.style.background = '#ffffff';
       
       contenedorTemporal.appendChild(elementoClon);
       document.body.appendChild(contenedorTemporal);
 
       const opciones = {
-        margin: [10, 10, 10, 10],
-        filename: `Recibo_${folio}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { 
+        margin:       10,
+        filename:     `Recibo_${folio}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  {
           scale: 2, 
           useCORS: true, 
-          logging: false,
-          scrollX: 0,
+          letterRendering: true,
           scrollY: 0,
-          windowWidth: 800
+          scrollX: 0
         },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
       if (typeof html2pdf !== 'undefined') {
