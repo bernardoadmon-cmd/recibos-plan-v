@@ -123,7 +123,7 @@
   <div id="loginScreen" class="min-h-screen flex items-center justify-center">
     <div class="bg-white p-10 rounded-3xl shadow-brand-lg text-center max-w-md w-full mx-4 border border-brand-purple/20">
       <div class="h-20 w-20 flex items-center justify-center mx-auto mb-6">
-        <img src="./logo/logo-plan-v.png" alt="Logo PLAN V" class="w-16 h-16 object-contain">
+        <img src="./logo/logo-plan-v.png" alt="Logo PLAN V" crossorigin="anonymous" class="w-16 h-16 object-contain">
       </div>
       <h2 class="text-2xl font-black text-brand-dark mb-2">Bienvenido a PLAN V</h2>
       <p class="text-sm text-slate-500 mb-8">Inicia sesión con tu correo autorizado para continuar.</p>
@@ -725,7 +725,7 @@
                   <p class="font-extrabold text-brand-dark text-sm">DATOS DE LA AGENCIA</p>
                   <p class="font-black text-brand-pink">PLAN V by FraVEO</p>
                   <p class="font-semibold text-slate-800" id="pdfAgenteViajes"></p>
-                  <p>Domicilio: 4313, Col. Lázaro Cárdenas Sur</p>
+                  <p>Domicilio: Miguel Orozco Camacho 4313, Col. Lázaro Cárdenas Sur</p>
                   <p>C.P. 44980</p>
                   <p class="font-bold text-slate-700">Guadalajara, Jalisco</p>
                   <p class="font-bold text-slate-700" id="pdfContactoAgente" style="display: none;"></p>
@@ -799,9 +799,10 @@
                     <table id="pdfTableElement" class="w-full text-[10px]">
                       <thead class="text-brand-muted uppercase border-b font-bold">
                         <tr>
-                          <th class="pb-1 text-left">Fecha</th>
-                          <th class="pb-1 text-left">Método</th>
-                          <th class="pb-1 text-right">Abono</th>
+                          <th class="pb-1 text-left w-1/4">Fecha</th>
+                          <th class="pb-1 text-left w-1/3">Método</th>
+                          <th class="pb-1 text-center w-1/6">TC</th>
+                          <th class="pb-1 text-right w-1/4">Abono</th>
                         </tr>
                       </thead>
                       <tbody id="pdfTblHistorial" class="divide-y divide-slate-100 font-semibold text-slate-700">
@@ -1643,10 +1644,13 @@
 
           const padStyle = isCompact ? 'padding: 2px 0;' : 'padding: 4px 0;';
 
+          const tcStr = data.moneda === 'USD' ? `$${(a.tc || cli.tc || 18.5).toFixed(2)}` : '-';
+
           pdfTbl.innerHTML += `
             <tr>
               <td style="${padStyle}">${a.fecha}</td>
               <td style="${padStyle}" class="text-slate-500">${a.metodo}</td>
+              <td style="${padStyle}" class="text-center text-slate-500">${tcStr}</td>
               <td style="${padStyle}" class="text-right font-black text-brand-dark leading-tight">${displayStr}</td>
             </tr>
           `;
@@ -1668,31 +1672,56 @@
 
     function descargarPDFActual() {
       console.log('Ejecutando descargarPDFActual...');
-      const elemento = document.getElementById('recibo-imprimir');
-      if (!elemento) {
+      const elementoOriginal = document.getElementById('recibo-imprimir');
+      if (!elementoOriginal) {
         console.error('No se encontró el contenedor del recibo (#recibo-imprimir)');
         alert('Error: No se encontró la plantilla del recibo.');
         return;
       }
 
+      const folio = currentReceiptData ? currentReceiptData.folio : 'PlanV';
+
+      // Clonar el elemento a un contenedor temporal con dimensiones fijas de escritorio
+      const elementoClon = elementoOriginal.cloneNode(true);
+      const contenedorTemporal = document.createElement('div');
+      
+      contenedorTemporal.style.position = 'absolute';
+      contenedorTemporal.style.left = '-9999px';
+      contenedorTemporal.style.top = '-9999px';
+      contenedorTemporal.style.width = '800px';
+      contenedorTemporal.style.background = '#ffffff';
+      
+      contenedorTemporal.appendChild(elementoClon);
+      document.body.appendChild(contenedorTemporal);
+
       const opciones = {
-        margin:       0.2,
-        filename:     'Comprobante_PlanV.pdf',
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: false, logging: false, allowTaint: true },
-        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        margin: [10, 10, 10, 10],
+        filename: `Recibo_${folio}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+          scale: 2, 
+          useCORS: true, 
+          logging: false,
+          scrollX: 0,
+          scrollY: 0,
+          windowWidth: 800
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
       if (typeof html2pdf !== 'undefined') {
-        html2pdf().set(opciones).from(elemento).save().then(() => {
+        html2pdf().set(opciones).from(elementoClon).save().then(() => {
           console.log('PDF generado exitosamente');
+          document.body.removeChild(contenedorTemporal);
         }).catch(err => {
           console.error('Error al generar PDF con html2pdf:', err);
           alert('No se pudo completar la generación del PDF. Por favor reintente.');
+          document.body.removeChild(contenedorTemporal);
         });
       } else {
         console.error('html2pdf no está cargado');
         alert('La librería PDF aún no ha terminado de cargar. Por favor espera unos segundos.');
+        document.body.removeChild(contenedorTemporal);
       }
     }
 
