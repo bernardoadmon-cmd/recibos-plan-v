@@ -78,11 +78,15 @@
 
     /* Estilos específicos para la plantilla del recibo PDF */
     .receipt-page {
-      width: 750px;
+      width: 794px;
+      min-width: 794px;
+      max-width: 794px;
       min-height: 980px;
       background: #ffffff;
       box-shadow: 0 15px 35px -5px rgba(24, 21, 36, 0.15);
       margin: 0 auto;
+      box-sizing: border-box;
+      overflow: visible;
     }
 
     .brand-border-top {
@@ -704,7 +708,7 @@
           <!-- PLANTILLA FÍSICA A EXPORTAR A PDF (COMPROBANTE ESTILO FACTURA PLAN V) -->
           <div class="bg-white p-2 rounded-b-2xl overflow-x-auto">
             
-            <div id="recibo-imprimir" class="receipt-page p-8 font-sans text-brand-text relative">
+            <div id="recibo-imprimir" class="receipt-page p-6 font-sans text-brand-text relative">
               
               <!-- BARRA DE GRADIENTE DE MARCA EN EL BORDE SUPERIOR -->
               <div class="absolute top-0 left-0 right-0 h-2.5 bg-gradient-to-r from-brand-pink via-brand-purple to-brand-cyan rounded-t-xl"></div>
@@ -742,7 +746,7 @@
               </div>
 
               <!-- DATOS DEL COMPROBANTE & CLIENTE -->
-              <div class="grid grid-cols-2 gap-6 my-6 bg-brand-soft/80 p-4 rounded-xl border border-brand-purple/30">
+              <div class="grid grid-cols-2 gap-4 my-4 bg-brand-soft/80 p-4 rounded-xl border border-brand-purple/30">
                 
                 <div class="space-y-2 text-xs">
                   <div>
@@ -771,7 +775,7 @@
               </div>
 
               <!-- RECUADRO Y TABLA CON LOS RUBROS REQUERIDOS -->
-              <div class="my-6 border border-brand-purple/30 rounded-xl overflow-hidden shadow-sm">
+              <div class="my-4 border border-brand-purple/30 rounded-xl overflow-hidden shadow-sm">
                 <div class="bg-brand-dark text-white p-3 text-xs font-extrabold tracking-wider uppercase flex justify-between items-center">
                   <span>Rubro de la Transacción Actual</span>
                   <span class="text-brand-cyan">Detalle de Anticipo</span>
@@ -798,7 +802,7 @@
               </div>
 
               <!-- HISTORIAL DE ABONOS Y RESUMEN DE SALDO -->
-              <div class="grid grid-cols-12 gap-6 my-6">
+              <div class="grid grid-cols-12 gap-4 my-4">
                 
                 <!-- Historial Acumulado de Abonos -->
                 <div class="col-span-7 border border-brand-purple/30 rounded-xl p-3 bg-white">
@@ -839,7 +843,7 @@
               </div>
 
               <!-- TÉRMINOS Y CONDICIONES (REQUERIDO) -->
-              <div class="mt-6 pt-3 border-t border-slate-200 text-[9px] text-slate-500 leading-normal text-justify">
+              <div class="mt-4 pt-3 border-t border-slate-200 text-[9px] text-slate-500 leading-normal text-justify">
                 <p class="font-bold text-brand-dark mb-0.5 uppercase tracking-wider">Términos y Condiciones</p>
                 <p>Este recibo acredita la recepción del anticipo para el servicio contratado. Los anticipos no son reembolsables una vez iniciadas las gestiones o confirmadas las reservaciones con proveedores. Las cotizaciones en USD se pagan exclusivamente en MXN, conforme al tipo de cambio vigente al momento del pago. Para trámites de visa y pasaporte, el anticipo no es reembolsable ni transferible y tiene una vigencia de 6 meses.</p>
               </div>
@@ -1770,7 +1774,7 @@
       document.body.appendChild(contenedorTemporal);
 
       const opciones = {
-        margin:       10,
+        margin:       [8, 8, 8, 8],
         filename:     `Recibo_${folio}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  {
