@@ -78,14 +78,15 @@
 
     /* Estilos específicos para la plantilla del recibo PDF */
     .receipt-page {
-      width: 794px;
-      min-width: 794px;
-      max-width: 794px;
+      width: 720px !important;
+      max-width: 720px !important;
+      min-width: 720px !important;
       min-height: 980px;
       background: #ffffff;
       box-shadow: 0 15px 35px -5px rgba(24, 21, 36, 0.15);
-      margin: 0 auto;
-      box-sizing: border-box;
+      margin: 0 auto !important;
+      padding: 20px !important;
+      box-sizing: border-box !important;
       overflow: visible;
     }
 
@@ -1766,7 +1767,7 @@
       contenedorTemporal.style.position = 'absolute';
       contenedorTemporal.style.left = '-9999px';
       contenedorTemporal.style.top = '-9999px';
-      contenedorTemporal.style.width = '794px';
+      contenedorTemporal.style.width = '720px';
       contenedorTemporal.style.opacity = '0';
       contenedorTemporal.style.background = '#ffffff';
       
@@ -1774,7 +1775,7 @@
       document.body.appendChild(contenedorTemporal);
 
       const opciones = {
-        margin:       [8, 8, 8, 8],
+        margin:       [6, 0, 6, 0],
         filename:     `Recibo_${folio}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  {
